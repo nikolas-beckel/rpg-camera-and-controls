@@ -3,15 +3,15 @@
 	"id": "rpg-camera",
 	"version": "${version}",
 	"name": "RPG Camera",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Adds an RPG-style third-person camera to Minecraft.",
 	"authors": [
-		"Me!"
+		"Kunga (Nikolas)"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/nikolas-beckel/rpg-camera",
+		"sources": "https://github.com/nikolas-beckel/rpg-camera"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/rpg-camera/icon.png",
 	"environment": "*",
 	"entrypoints": {

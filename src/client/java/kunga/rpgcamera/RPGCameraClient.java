@@ -1,10 +1,13 @@
 package kunga.rpgcamera;
 
+import kunga.rpgcamera.input.Keybinds;
 import net.fabricmc.api.ClientModInitializer;
 
 public class RPGCameraClient implements ClientModInitializer {
-	@Override
+
+    @Override
 	public void onInitializeClient() {
-		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
+        Keybinds.register();
 	}
+
 }

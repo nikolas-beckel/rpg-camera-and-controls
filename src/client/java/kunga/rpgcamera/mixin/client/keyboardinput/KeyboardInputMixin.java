@@ -1,10 +1,12 @@
 package kunga.rpgcamera.mixin.client.keyboardinput;
 
+import kunga.rpgcamera.RPGCamera;
 import kunga.rpgcamera.input.Keybinds;
 import kunga.rpgcamera.input.RpgPlayerInput;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.option.Perspective;
+import net.minecraft.client.util.InputUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,9 +40,9 @@ public final class KeyboardInputMixin {
             options.forwardKey.isPressed(),
             options.backKey.isPressed(),
             Keybinds.STRAFE_LEFT_KEY.isPressed(),
-            Keybinds.TURN_LEFT_KEY != null && Keybinds.TURN_LEFT_KEY.isPressed(),
-            Keybinds.STRAFE_RIGHT_KEY != null && Keybinds.STRAFE_RIGHT_KEY.isPressed(),
-            Keybinds.TURN_RIGHT_KEY.isPressed(),
+            Keybinds.turnLeftKeyIsPressed(client),
+            Keybinds.STRAFE_RIGHT_KEY.isPressed(),
+            Keybinds.turnRightKeyIsPressed(client),
             options.jumpKey.isPressed(),
             options.sneakKey.isPressed(),
             options.sprintKey.isPressed()

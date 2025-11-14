@@ -1,12 +1,10 @@
 package kunga.rpgcamera.mixin.client.keyboardinput;
 
-import kunga.rpgcamera.RPGCamera;
 import kunga.rpgcamera.input.Keybinds;
 import kunga.rpgcamera.input.RpgPlayerInput;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.option.Perspective;
-import net.minecraft.client.util.InputUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,7 +1,9 @@
 package kunga.rpgcamera.mixin.client.minecraftclient;
 
+import kunga.rpgcamera.input.RpgMouseInput;
 import kunga.rpgcamera.input.RpgPlayerInput;
 import kunga.rpgcamera.model.PlayerHead;
+import kunga.rpgcamera.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.GlfwUtil;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,10 +22,7 @@ public final class MinecraftClientMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void rpg$render(boolean tick, CallbackInfo ci) {
-        var player = self.player;
-        if (player == null) return;
-
-        if (self.currentScreen != null || !self.isWindowFocused()) {
+        if (!ClientUtil.isIngame(self) || !self.isWindowFocused() || !ClientUtil.isRpgThirdPerson(self)) {
             lastRenderTime = GlfwUtil.getTime();
             return;
         }
@@ -35,13 +34,14 @@ public final class MinecraftClientMixin {
         if (deltaTime <= 0.0 || deltaTime > 0.5) return;
 
         PlayerHead.update(deltaTime);
+        RpgMouseInput.update(self.player, deltaTime);
         
         var turnSpeedInDegreePerSecond = RpgPlayerInput.getTurnSpeedInDegreesPerSecond();
         if (turnSpeedInDegreePerSecond == 0) return;
 
         var yawDelta = (float) (turnSpeedInDegreePerSecond * deltaTime);
 
-        player.setYaw(player.getYaw() + yawDelta);
+        self.player.setYaw(self.player.getYaw() + yawDelta);
     }
 
 }

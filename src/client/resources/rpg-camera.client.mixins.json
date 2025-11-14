@@ -7,7 +7,8 @@
     "keyboardinput.InputAccessor",
     "keyboardinput.KeyboardInputAccessor",
     "keyboardinput.KeyboardInputMixin",
-    "minecraftclient.MinecraftClientMixin"
+    "minecraftclient.MinecraftClientMixin",
+    "mouse.MouseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

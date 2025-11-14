@@ -1,8 +1,7 @@
 package kunga.rpgcamera.mixin.client.minecraftclient;
 
-import kunga.rpgcamera.RPGCamera;
-import kunga.rpgcamera.input.Keybinds;
 import kunga.rpgcamera.input.RpgPlayerInput;
+import kunga.rpgcamera.model.PlayerHead;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.GlfwUtil;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,11 +33,14 @@ public final class MinecraftClientMixin {
         lastRenderTime = now;
 
         if (deltaTime <= 0.0 || deltaTime > 0.5) return;
+
+        PlayerHead.update(deltaTime);
         
-        var turnSpeedInDegreePerSecond = RpgPlayerInput.getTurnSpeedInDegreePerSecond();
+        var turnSpeedInDegreePerSecond = RpgPlayerInput.getTurnSpeedInDegreesPerSecond();
         if (turnSpeedInDegreePerSecond == 0) return;
 
         var yawDelta = (float) (turnSpeedInDegreePerSecond * deltaTime);
+
         player.setYaw(player.getYaw() + yawDelta);
     }
 

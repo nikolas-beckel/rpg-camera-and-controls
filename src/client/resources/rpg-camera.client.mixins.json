@@ -3,6 +3,7 @@
   "package": "kunga.rpgcamera.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "bipedentitymodel.BipedEntityModelMixin",
     "keyboardinput.InputAccessor",
     "keyboardinput.KeyboardInputAccessor",
     "keyboardinput.KeyboardInputMixin",

@@ -4,7 +4,7 @@ import net.minecraft.util.PlayerInput;
 import net.minecraft.util.math.Vec2f;
 
 public final class RpgPlayerInput {
-    private static double TURN_SPEED_IN_DEGREE_PER_SEC = 180;
+    public static final double TURN_SPEED_IN_DEGREE_PER_SEC = 180;
 
     private static PlayerInput playerInput = PlayerInput.DEFAULT;
     private static boolean currentTurnLeft = false;
@@ -39,7 +39,7 @@ public final class RpgPlayerInput {
         return (forward == 0.0f && sideways == 0.0f) ? Vec2f.ZERO : new Vec2f(sideways, forward).normalize();
     }
 
-    public static double getTurnSpeedInDegreePerSecond() {
+    public static double getTurnSpeedInDegreesPerSecond() {
         var turnDirection = (currentTurnLeft ? -1 : 0) + (currentTurnRight ? 1 : 0);
         var speed = TURN_SPEED_IN_DEGREE_PER_SEC;
         if (playerInput.sprint()) speed *= 1.2;

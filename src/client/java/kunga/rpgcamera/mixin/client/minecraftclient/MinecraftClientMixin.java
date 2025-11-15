@@ -27,6 +27,10 @@ public final class MinecraftClientMixin {
             return;
         }
 
+        if (self.mouse.isCursorLocked()) {
+            self.mouse.unlockCursor();
+        }
+
         var now = GlfwUtil.getTime();
         var deltaTime = (lastRenderTime == Double.MIN_VALUE) ? 0.0 : (now - lastRenderTime);
         lastRenderTime = now;

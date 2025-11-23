@@ -23,6 +23,12 @@ public final class MouseMixin {
     @Unique
     MouseAccessor accessor;
 
+    @Unique
+    private double storedCursorX;
+
+    @Unique
+    private double storedCursorY;
+
     @Inject(method = "<init>", at = @At("TAIL"))
     private void rpg$initialization(CallbackInfo ci) {
         this.accessor = (MouseAccessor) self;
@@ -55,9 +61,18 @@ public final class MouseMixin {
 
         if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             if (action == GLFW.GLFW_PRESS) {
+                double[] x = new double[1];
+                double[] y = new double[1];
+                GLFW.glfwGetCursorPos(window, x, y);
+                this.storedCursorX = x[0];
+                this.storedCursorY = y[0];
+
+                GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
                 RpgCameraInput.onLeftMouseDown();
             } else if (action == GLFW.GLFW_RELEASE) {
                 RpgCameraInput.onLeftMouseUp();
+                GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+                GLFW.glfwSetCursorPos(window, this.storedCursorX, this.storedCursorY);
             }
         }
     }

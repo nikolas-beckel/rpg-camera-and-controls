@@ -6,6 +6,8 @@
     "bipedentitymodel.BipedEntityModelMixin",
     "camera.CameraAccessor",
     "camera.CameraMixin",
+    "gamerenderer.GameRendererAccessor",
+    "gamerenderer.GameRendererMixin",
     "keyboardinput.InputAccessor",
     "keyboardinput.KeyboardInputAccessor",
     "keyboardinput.KeyboardInputMixin",

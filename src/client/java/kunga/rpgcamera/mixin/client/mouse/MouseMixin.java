@@ -1,6 +1,5 @@
 package kunga.rpgcamera.mixin.client.mouse;
 
-import kunga.rpgcamera.RPGCamera;
 import kunga.rpgcamera.input.Keybinds;
 import kunga.rpgcamera.input.RpgCameraInput;
 import kunga.rpgcamera.input.RpgMouseInput;

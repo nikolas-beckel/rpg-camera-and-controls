@@ -19,9 +19,14 @@ public final class RpgMouseInput {
     private static double targetZoom = Double.NaN;
     private static double currentZoom = Double.NaN;
 
+    public static double getCurrentZoom() {
+        return currentZoom;
+    }
+
     public static void nudgeByScroll(PlayerEntity player, double vertical) {
         var cameraDistanceAttribute = player.getAttributeInstance(EntityAttributes.CAMERA_DISTANCE);
-        if (cameraDistanceAttribute == null) return;
+        if (cameraDistanceAttribute == null)
+            return;
 
         cameraDistanceAttribute.addTemporaryModifier(initializeAttributes(cameraDistanceAttribute));
 
@@ -30,7 +35,8 @@ public final class RpgMouseInput {
 
     public static void update(PlayerEntity player, double deltaSeconds) {
         var cameraDistanceAttribute = player.getAttributeInstance(EntityAttributes.CAMERA_DISTANCE);
-        if (cameraDistanceAttribute == null) return;
+        if (cameraDistanceAttribute == null)
+            return;
 
         cameraDistanceAttribute.addTemporaryModifier(initializeAttributes(cameraDistanceAttribute));
 
@@ -53,7 +59,8 @@ public final class RpgMouseInput {
         return applyAttributes(cameraDistanceAttribute, currentZoom);
     }
 
-    private static EntityAttributeModifier applyAttributes(EntityAttributeInstance cameraDistanceAttribute, double desiredZoom) {
+    private static EntityAttributeModifier applyAttributes(EntityAttributeInstance cameraDistanceAttribute,
+            double desiredZoom) {
         desiredZoom = MathHelper.clamp(desiredZoom, MIN, MAX);
 
         cameraDistanceAttribute.removeModifier(CAMERA_ZOOM_ID);
@@ -61,9 +68,8 @@ public final class RpgMouseInput {
         var offsetZoom = desiredZoom - defaultValue;
 
         return new EntityAttributeModifier(
-            CAMERA_ZOOM_ID,
-            offsetZoom,
-            EntityAttributeModifier.Operation.ADD_VALUE
-        );
+                CAMERA_ZOOM_ID,
+                offsetZoom,
+                EntityAttributeModifier.Operation.ADD_VALUE);
     }
 }

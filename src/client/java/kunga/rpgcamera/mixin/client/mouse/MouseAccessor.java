@@ -7,6 +7,12 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(Mouse.class)
 public interface MouseAccessor {
 
+    @Accessor("cursorDeltaX")
+    double getCursorDeltaX();
+
+    @Accessor("cursorDeltaY")
+    double getCursorDeltaY();
+
     @Accessor("cursorLocked")
     void setCursorLocked(boolean locked);
 

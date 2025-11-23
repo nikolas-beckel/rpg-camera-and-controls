@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "bipedentitymodel.BipedEntityModelMixin",
+    "camera.CameraAccessor",
+    "camera.CameraMixin",
     "keyboardinput.InputAccessor",
     "keyboardinput.KeyboardInputAccessor",
     "keyboardinput.KeyboardInputMixin",
@@ -13,5 +15,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-	}
+  }
 }

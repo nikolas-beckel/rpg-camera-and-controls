@@ -58,7 +58,7 @@ public final class MouseMixin {
             return;
         }
 
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             if (action == GLFW.GLFW_PRESS) {
                 double[] x = new double[1];
                 double[] y = new double[1];
@@ -67,9 +67,9 @@ public final class MouseMixin {
                 this.storedCursorY = y[0];
 
                 GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
-                RpgCameraInput.onLeftMouseDown();
+                RpgCameraInput.onRightMouseDown();
             } else if (action == GLFW.GLFW_RELEASE) {
-                RpgCameraInput.onLeftMouseUp();
+                RpgCameraInput.onRightMouseUp();
                 GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
                 GLFW.glfwSetCursorPos(window, this.storedCursorX, this.storedCursorY);
             }

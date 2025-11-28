@@ -2,7 +2,7 @@ package kunga.rpgcamera.input;
 
 public final class RpgCameraInput {
 
-    private static boolean isLeftMouseHeld = false;
+    private static boolean isRightMouseHeld = false;
 
     private static boolean hasCalibration = false;
 
@@ -26,21 +26,21 @@ public final class RpgCameraInput {
     private RpgCameraInput() {
     }
 
-    public static void onLeftMouseDown() {
-        isLeftMouseHeld = true;
+    public static void onRightMouseDown() {
+        isRightMouseHeld = true;
         movedDuringHold = false;
         accumulatedDx = 0.0;
         accumulatedDy = 0.0;
     }
 
-    public static void onLeftMouseUp() {
-        isLeftMouseHeld = false;
+    public static void onRightMouseUp() {
+        isRightMouseHeld = false;
         accumulatedDx = 0.0;
         accumulatedDy = 0.0;
     }
 
     public static boolean isOrbiting() {
-        return isLeftMouseHeld;
+        return isRightMouseHeld;
     }
 
     public static void ensureDefaultCameraPosition() {
@@ -64,7 +64,7 @@ public final class RpgCameraInput {
             movedDuringHold = true;
         }
 
-        if (!isLeftMouseHeld) {
+        if (!isRightMouseHeld) {
             return;
         }
 

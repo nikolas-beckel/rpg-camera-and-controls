@@ -7,6 +7,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import kunga.rpgcamera.input.RpgCameraInput;
+import kunga.rpgcamera.input.RpgMouseInput;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.render.BufferBuilderStorage;
@@ -46,17 +48,24 @@ public final class GameRendererMixin {
 
     @Inject(method = "shouldRenderBlockOutline", at = @At("HEAD"))
     private void rpg$shouldRenderBlockOutline(CallbackInfoReturnable<Boolean> cir) {
+        if (RpgCameraInput.isOrbiting()) {
+            return;
+        }
+
         var client = self.getClient();
         var camera = self.getCamera();
 
-        if (client == null || client.world == null || client.getCameraEntity() == null)
+        if (client == null || client.world == null || client.getCameraEntity() == null) {
             return;
+        }
 
-        if (client.currentScreen != null || client.getOverlay() != null)
+        if (client.currentScreen != null || client.getOverlay() != null) {
             return;
+        }
 
-        if (client.mouse.isCursorLocked())
+        if (client.mouse.isCursorLocked()) {
             return;
+        }
 
         Window win = client.getWindow();
         double mx = client.mouse.getX();
@@ -77,9 +86,9 @@ public final class GameRendererMixin {
                         RaycastContext.FluidHandling.NONE,
                         client.getCameraEntity()));
 
-        // if (!MousePicker.isWithinPlayerReach(client.player, blockHit)) {
-        // return HookOutcome.continueChain();
-        // }
+        if (!RpgMouseInput.isHitResultWithinPlayerReach(client.player, blockHit)) {
+            return;
+        }
 
         client.crosshairTarget = blockHit != null
                 ? blockHit
@@ -91,28 +100,15 @@ public final class GameRendererMixin {
         client.targetedEntity = null;
     }
 
-    // @Inject(method = "renderWorld", at = @At("HEAD"))
-    // private void tutorialmod$saveCrosshair(RenderTickCounter rtc, CallbackInfo
-    // ci) {
-    // crosshairTarget = self.getClient().crosshairTarget;
-    // }
-
-    // @Inject(method = "renderWorld", at = @At("TAIL"))
-    // private void tutorialmod$restoreCrosshair(RenderTickCounter rtc, CallbackInfo
-    // ci) {
-    // self.getClient().crosshairTarget = crosshairTarget;
-    // crosshairTarget = null;
-    // }
-
     @Inject(method = "updateCrosshairTarget(F)V", at = @At("HEAD"), cancellable = true)
     private void tutorialmod$updateCrosshairTarget(float tickProgress, CallbackInfo ci) {
         var entity = self.getClient().getCameraEntity();
         if (entity != null) {
             if (self.getClient().world != null && self.getClient().player != null) {
-                var hitResult = tutorialmod$pickUnderMouse(self.getClient().mouse, self.getClient());
+                var hitResult = rpg$pickUnderMouse(self.getClient().mouse, self.getClient());
 
-                // if (MousePicker.isWithinPlayerReach(this.client.player, hitResult)) {
-                if (true) {
+                if (RpgMouseInput.isHitResultWithinPlayerReach(self.getClient().player, hitResult)
+                        && !RpgCameraInput.isOrbiting()) {
                     self.getClient().crosshairTarget = hitResult;
                     self.getClient().targetedEntity = hitResult instanceof EntityHitResult entityHitResult
                             ? entityHitResult.getEntity()
@@ -130,7 +126,7 @@ public final class GameRendererMixin {
     }
 
     @Unique
-    private static HitResult tutorialmod$pickUnderMouse(Mouse mouseInstance, MinecraftClient client) {
+    private static HitResult rpg$pickUnderMouse(Mouse mouseInstance, MinecraftClient client) {
         Window win = client.getWindow();
         double mx = mouseInstance.getX();
         double my = mouseInstance.getY();

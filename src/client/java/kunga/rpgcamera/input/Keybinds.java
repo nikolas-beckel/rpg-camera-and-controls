@@ -78,10 +78,24 @@ public final class Keybinds {
         );
     }
 
+    public static boolean strafeLeftKeyIsPressed(MinecraftClient client) {
+        return InputUtil.isKeyPressed(
+            client.getWindow().getHandle(),
+            Keybinds.STRAFE_LEFT_KEY.getDefaultKey().getCode()
+        );
+    }
+
     public static boolean turnRightKeyIsPressed(MinecraftClient client) {
         return InputUtil.isKeyPressed(
             client.getWindow().getHandle(),
             Keybinds.TURN_RIGHT_KEY.getDefaultKey().getCode()
+        );
+    }
+
+    public static boolean strafeRightKeyIsPressed(MinecraftClient client) {
+        return InputUtil.isKeyPressed(
+            client.getWindow().getHandle(),
+            Keybinds.STRAFE_RIGHT_KEY.getDefaultKey().getCode()
         );
     }
 }

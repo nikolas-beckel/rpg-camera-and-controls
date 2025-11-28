@@ -37,9 +37,9 @@ public final class KeyboardInputMixin {
         RpgPlayerInput.setMovement(
             options.forwardKey.isPressed(),
             options.backKey.isPressed(),
-            Keybinds.STRAFE_LEFT_KEY.isPressed(),
+            Keybinds.strafeLeftKeyIsPressed(client),
             Keybinds.turnLeftKeyIsPressed(client),
-            Keybinds.STRAFE_RIGHT_KEY.isPressed(),
+            Keybinds.strafeRightKeyIsPressed(client),
             Keybinds.turnRightKeyIsPressed(client),
             options.jumpKey.isPressed(),
             options.sneakKey.isPressed(),

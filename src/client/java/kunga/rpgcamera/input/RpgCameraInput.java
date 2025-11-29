@@ -13,9 +13,6 @@ public final class RpgCameraInput {
     private static final double MIN_PITCH = Math.toRadians(-85.0);
     private static final double MAX_PITCH = Math.toRadians(85.0);
 
-    private static double yawRadiansPerPixel = 0.0015;
-    private static double pitchRadiansPerPixel = 0.0011;
-
     private static boolean movedDuringHold = false;
 
     private static double accumulatedDx = 0.0;
@@ -72,6 +69,8 @@ public final class RpgCameraInput {
             return;
         }
 
+        double yawRadiansPerPixel = 0.0015;
+        double pitchRadiansPerPixel = 0.0011;
         orbitYawRadians += deltaX * yawRadiansPerPixel;
         orbitPitchRadians = Math.clamp(orbitPitchRadians + deltaY * pitchRadiansPerPixel, MIN_PITCH, MAX_PITCH);
     }
@@ -83,7 +82,7 @@ public final class RpgCameraInput {
                 orbitRadius = zoomR;
             }
         } catch (Throwable ignored) {
-            // TODO: Hier mit catch arbeiten.
+            // TODO: Do something?
         }
 
         return orbitRadius;

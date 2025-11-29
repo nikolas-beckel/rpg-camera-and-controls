@@ -7,8 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import kunga.rpgcamera.input.RpgCameraInput;
-import kunga.rpgcamera.input.RpgMouseInput;
+import kunga.rpgcamera.camera.RpgCamera;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.render.BufferBuilderStorage;
@@ -48,7 +47,7 @@ public final class GameRendererMixin {
 
     @Inject(method = "shouldRenderBlockOutline", at = @At("HEAD"))
     private void rpg$shouldRenderBlockOutline(CallbackInfoReturnable<Boolean> cir) {
-        if (RpgCameraInput.isOrbiting()) {
+        if (RpgCamera.isOrbiting()) {
             return;
         }
 
@@ -86,7 +85,7 @@ public final class GameRendererMixin {
                         RaycastContext.FluidHandling.NONE,
                         client.getCameraEntity()));
 
-        if (!RpgMouseInput.isHitResultWithinPlayerReach(client.player, blockHit)) {
+        if (!RpgCamera.isHitResultWithinPlayerReach(client.player, blockHit)) {
             return;
         }
 
@@ -107,8 +106,8 @@ public final class GameRendererMixin {
             if (self.getClient().world != null && self.getClient().player != null) {
                 var hitResult = rpg$pickUnderMouse(self.getClient().mouse, self.getClient());
 
-                if (RpgMouseInput.isHitResultWithinPlayerReach(self.getClient().player, hitResult)
-                        && !RpgCameraInput.isOrbiting()) {
+                if (RpgCamera.isHitResultWithinPlayerReach(self.getClient().player, hitResult)
+                        && !RpgCamera.isOrbiting()) {
                     self.getClient().crosshairTarget = hitResult;
                     self.getClient().targetedEntity = hitResult instanceof EntityHitResult entityHitResult
                             ? entityHitResult.getEntity()

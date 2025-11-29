@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import kunga.rpgcamera.input.RpgCameraInput;
+import kunga.rpgcamera.camera.RpgCamera;
 import kunga.rpgcamera.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
@@ -40,10 +40,10 @@ public final class CameraMixin {
         if (!ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client))
             return;
 
-        RpgCameraInput.ensureDefaultCameraPosition();
+        RpgCamera.ensureDefaultCameraPosition();
 
         // When moving and not orbiting set camera back behind player.
-        if (!RpgCameraInput.isOrbiting()) {
+        if (!RpgCamera.isOrbiting()) {
             var moving = focusedEntity.getVelocity().horizontalLengthSquared() > 0.0001;
 
             var yawNowDeg = focusedEntity.getYaw(tickProgress);
@@ -53,7 +53,7 @@ public final class CameraMixin {
             if (moving || turning) {
                 var desiredOrbitYaw = Math.toRadians(yawNowDeg);
 
-                RpgCameraInput.nudgeYawTowards(desiredOrbitYaw, 0.12);
+                RpgCamera.nudgeYawTowards(desiredOrbitYaw, 0.12);
             }
         }
 
@@ -62,15 +62,15 @@ public final class CameraMixin {
                 + focusedEntity.getStandingEyeHeight() * 0.8;
         final double targetZ = MathHelper.lerp(tickProgress, focusedEntity.lastZ, focusedEntity.getZ());
 
-        float camYawDeg = (float) Math.toDegrees(RpgCameraInput.getOrbitYawRadians());
-        float camPitchDeg = (float) Math.toDegrees(RpgCameraInput.getOrbitPitchRadians());
+        float camYawDeg = (float) Math.toDegrees(RpgCamera.getOrbitYawRadians());
+        float camPitchDeg = (float) Math.toDegrees(RpgCamera.getOrbitPitchRadians());
         if (inversiveView) {
             camYawDeg += 180.0f;
             camPitchDeg = -camPitchDeg;
         }
         this.accessor.invokeSetRotation(camYawDeg, camPitchDeg);
 
-        final double radius = RpgCameraInput.getRadiusForFrame();
+        final double radius = RpgCamera.getRadiusForFrame();
         Vector3f fwd = self.getHorizontalPlane(); // Blickrichtung (normiert)
         Vec3d desired = new Vec3d(
                 targetX - fwd.x * radius,

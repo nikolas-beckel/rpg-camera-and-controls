@@ -1,7 +1,7 @@
 package kunga.rpgcamera.mixin.client.mouse;
 
+import kunga.rpgcamera.camera.RpgCamera;
 import kunga.rpgcamera.input.Keybinds;
-import kunga.rpgcamera.input.RpgCameraInput;
 import kunga.rpgcamera.input.RpgMouseInput;
 import kunga.rpgcamera.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
@@ -44,11 +44,11 @@ public final class MouseMixin {
             return;
         }
 
-        RpgMouseInput.nudgeByScroll(client.player, vertical);
+        RpgMouseInput.addScrollDelta(vertical);
         ci.cancel();
     }
 
-    @Inject(method = "onMouseButton", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onMouseButton", at = @At("HEAD"))
     private void rpg$onMouseButton(long window, int button, int action, int modifiers, CallbackInfo ci) {
         var client = MinecraftClient.getInstance();
         if (client == null)
@@ -67,9 +67,9 @@ public final class MouseMixin {
                 this.storedCursorY = y[0];
 
                 GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
-                RpgCameraInput.onRightMouseDown();
+                RpgMouseInput.onRightMouseDown();
             } else if (action == GLFW.GLFW_RELEASE) {
-                RpgCameraInput.onRightMouseUp();
+                RpgMouseInput.onRightMouseUp();
                 GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
                 GLFW.glfwSetCursorPos(window, this.storedCursorX, this.storedCursorY);
             }
@@ -83,7 +83,8 @@ public final class MouseMixin {
             return;
         }
 
-        RpgCameraInput.calculateOrbitRadiants(this.accessor.getCursorDeltaX(), this.accessor.getCursorDeltaY());
+        RpgMouseInput.updateCursorDelta(this.accessor.getCursorDeltaX(), this.accessor.getCursorDeltaY());
+        RpgCamera.updateOrbitFromMouseDelta();
     }
 
     @Inject(method = "lockCursor", at = @At("HEAD"), cancellable = true)

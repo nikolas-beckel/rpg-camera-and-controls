@@ -1,6 +1,7 @@
 package kunga.rpgcamera.mixin.client.minecraftclient;
 
 import kunga.rpgcamera.RPGCamera;
+import kunga.rpgcamera.camera.RpgCamera;
 import kunga.rpgcamera.input.Keybinds;
 import kunga.rpgcamera.input.RpgMouseInput;
 import kunga.rpgcamera.input.RpgPlayerInput;
@@ -13,7 +14,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.GlfwUtil;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -48,7 +48,7 @@ public final class MinecraftClientMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void rpg$render(boolean tick, CallbackInfo ci) {
-        if (!ClientUtil.isIngame(self) || !self.isWindowFocused() || !ClientUtil.isRpgThirdPerson(self)) {
+        if (self.player == null || !ClientUtil.isIngame(self) || !self.isWindowFocused() || !ClientUtil.isRpgThirdPerson(self)) {
             lastRenderTime = GlfwUtil.getTime();
             return;
         }
@@ -65,7 +65,8 @@ public final class MinecraftClientMixin {
             return;
 
         PlayerHead.update(deltaTime);
-        RpgMouseInput.update(self.player, deltaTime);
+        RpgCamera.applyScrollZoom(self.player);
+        RpgCamera.updateZoom(self.player, deltaTime);
 
         var turnSpeedInDegreePerSecond = RpgPlayerInput.getTurnSpeedInDegreesPerSecond();
         if (turnSpeedInDegreePerSecond == 0)
@@ -74,6 +75,13 @@ public final class MinecraftClientMixin {
         var yawDelta = (float) (turnSpeedInDegreePerSecond * deltaTime);
 
         self.player.setYaw(self.player.getYaw() + yawDelta);
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void rpg$tick(CallbackInfo ci) {
+        if (true) {
+
+        }
     }
 
     @Inject(method = "handleInputEvents", at = @At("HEAD"))

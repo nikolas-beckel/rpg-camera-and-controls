@@ -36,11 +36,7 @@ public final class MouseMixin {
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     private void rpg$onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
         var client = MinecraftClient.getInstance();
-        if (client == null)
-            return;
-
-        if (!ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client)
-                || !Keybinds.TOGGLE_ZOOM_KEY.isPressed()) {
+        if (client == null || !ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client) || !Keybinds.TOGGLE_ZOOM_KEY.isPressed()) {
             return;
         }
 
@@ -51,10 +47,7 @@ public final class MouseMixin {
     @Inject(method = "onMouseButton", at = @At("HEAD"))
     private void rpg$onMouseButton(long window, int button, int action, int modifiers, CallbackInfo ci) {
         var client = MinecraftClient.getInstance();
-        if (client == null)
-            return;
-
-        if (!ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client)) {
+        if (client == null || !ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client)) {
             return;
         }
 
@@ -78,7 +71,7 @@ public final class MouseMixin {
     @Inject(method = "onCursorPos", at = @At("TAIL"))
     private void rpg$onCursorPos(long window, double x, double y, CallbackInfo ci) {
         var client = MinecraftClient.getInstance();
-        if (client == null || window != client.getWindow().getHandle() || client.currentScreen != null) {
+        if (client == null || window != client.getWindow().getHandle() || client.currentScreen != null || !ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client)) {
             return;
         }
 

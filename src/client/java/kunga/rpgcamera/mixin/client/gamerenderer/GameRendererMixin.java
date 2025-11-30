@@ -1,5 +1,6 @@
 package kunga.rpgcamera.mixin.client.gamerenderer;
 
+import kunga.rpgcamera.util.ClientUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,21 +41,24 @@ public final class GameRendererMixin {
     private static HitResult crosshairTarget;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void initialize(MinecraftClient client, HeldItemRenderer heldItemRenderer,
-            BufferBuilderStorage bufferBuilderStorage, CallbackInfo ci) {
+    private void initialize(MinecraftClient client, HeldItemRenderer heldItemRenderer, BufferBuilderStorage bufferBuilderStorage, CallbackInfo ci) {
         this.accessor = (GameRendererAccessor) self;
     }
 
     @Inject(method = "shouldRenderBlockOutline", at = @At("HEAD"))
     private void rpg$shouldRenderBlockOutline(CallbackInfoReturnable<Boolean> cir) {
+        var client = self.getClient();
+        if (!ClientUtil.isRpgThirdPerson(client)) {
+            return;
+        }
+
         if (RpgCamera.isOrbiting()) {
             return;
         }
 
-        var client = self.getClient();
         var camera = self.getCamera();
 
-        if (client == null || client.world == null || client.getCameraEntity() == null) {
+        if (client.world == null || client.getCameraEntity() == null) {
             return;
         }
 
@@ -100,26 +104,30 @@ public final class GameRendererMixin {
     }
 
     @Inject(method = "updateCrosshairTarget(F)V", at = @At("HEAD"), cancellable = true)
-    private void tutorialmod$updateCrosshairTarget(float tickProgress, CallbackInfo ci) {
-        var entity = self.getClient().getCameraEntity();
-        if (entity != null) {
-            if (self.getClient().world != null && self.getClient().player != null) {
-                var hitResult = rpg$pickUnderMouse(self.getClient().mouse, self.getClient());
+    private void rpg$updateCrosshairTarget(float tickProgress, CallbackInfo ci) {
+        var client = self.getClient();
+        if (!ClientUtil.isRpgThirdPerson(client)) {
+            return;
+        }
 
-                if (RpgCamera.isHitResultWithinPlayerReach(self.getClient().player, hitResult)
+        var entity = client.getCameraEntity();
+        if (entity != null) {
+            if (client.world != null && client.player != null) {
+                var hitResult = rpg$pickUnderMouse(client.mouse, client);
+
+                if (RpgCamera.isHitResultWithinPlayerReach(client.player, hitResult)
                         && !RpgCamera.isOrbiting()) {
-                    self.getClient().crosshairTarget = hitResult;
-                    self.getClient().targetedEntity = hitResult instanceof EntityHitResult entityHitResult
+                    client.crosshairTarget = hitResult;
+                    client.targetedEntity = hitResult instanceof EntityHitResult entityHitResult
                             ? entityHitResult.getEntity()
                             : null;
                     ci.cancel();
                     return;
                 }
 
-                self.getClient().crosshairTarget = null;
-                self.getClient().targetedEntity = null;
+                client.crosshairTarget = null;
+                client.targetedEntity = null;
                 ci.cancel();
-                return;
             }
         }
     }

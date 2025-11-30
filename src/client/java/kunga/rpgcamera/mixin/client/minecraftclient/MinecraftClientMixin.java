@@ -90,6 +90,10 @@ public final class MinecraftClientMixin {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void rpg$tick(CallbackInfo ci) {
+        if (!ClientUtil.isRpgThirdPerson(self)) {
+            return;
+        }
+
         UseKeyInput.tick(self);
 
         if (UseKeyInput.isJustReleased() && self.options.useKey.getBoundKeyTranslationKey().equals("key.mouse.right")) {
@@ -104,39 +108,44 @@ public final class MinecraftClientMixin {
 
     @Inject(method = "handleInputEvents", at = @At("HEAD"))
     private void rpg$handleInputEvents(CallbackInfo ci) {
-        if (self.player != null && ClientUtil.isRpgThirdPerson(self)) {
-            while (self.options.dropKey.wasPressed()) {
-                // Remove pressed counts for vanilla code.
-            }
-            while (Keybinds.DROP_ITEM.wasPressed()) {
-                RPGCamera.LOGGER.info("Strafe left was pressed.");
-                if (!self.player.isSpectator()) {
-                    self.player.dropSelectedItem(Screen.hasControlDown());
-                }
-            }
+        if (!ClientUtil.isRpgThirdPerson(self) || self.player == null) {
+            return;
+        }
 
-            while (self.options.inventoryKey.wasPressed()) {
-                // Remove pressed counts for vanilla code.
+        while (self.options.dropKey.wasPressed()) {
+            // Remove pressed counts for vanilla code.
+        }
+        while (Keybinds.DROP_ITEM.wasPressed()) {
+            if (!self.player.isSpectator()) {
+                self.player.dropSelectedItem(Screen.hasControlDown());
             }
-            while (Keybinds.OPEN_INVENTORY.wasPressed()) {
-                if (self.interactionManager.hasRidingInventory()) {
-                    this.player.openRidingInventory();
-                } else {
-                    this.accessor.tutorialManager().onInventoryOpened();
-                    self.setScreen(new InventoryScreen(self.player));
-                }
+        }
+
+        while (self.options.inventoryKey.wasPressed()) {
+            // Remove pressed counts for vanilla code.
+        }
+        while (Keybinds.OPEN_INVENTORY.wasPressed()) {
+            if (self.interactionManager.hasRidingInventory()) {
+                this.player.openRidingInventory();
+            } else {
+                this.accessor.tutorialManager().onInventoryOpened();
+                self.setScreen(new InventoryScreen(self.player));
             }
         }
     }
 
     @Redirect(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Mouse;isCursorLocked()Z"))
     private boolean rpg$handleInputEvents_isCursorLocked(Mouse mouse) {
-        return true;
+        if (ClientUtil.isRpgThirdPerson(self)) {
+            return true;
+        }
+
+        return self.mouse.isCursorLocked();
     }
 
     @Redirect(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;doItemUse()V", ordinal = 0))
     private void rpg$handleInputEvents_doItemOnWasPressed(MinecraftClient self) {
-        if (self.options.useKey.getBoundKeyTranslationKey().equals("key.mouse.right")) {
+        if (ClientUtil.isRpgThirdPerson(self) && self.options.useKey.getBoundKeyTranslationKey().equals("key.mouse.right")) {
             return;
         }
         this.accessor.invokeDoItemUse();
@@ -144,7 +153,7 @@ public final class MinecraftClientMixin {
 
     @Redirect(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;doItemUse()V", ordinal = 1))
     private void rpg$handleInputEvents_doItemOnIsPressed(MinecraftClient self) {
-        if (self.options.useKey.getBoundKeyTranslationKey().equals("key.mouse.right")) {
+        if (ClientUtil.isRpgThirdPerson(self) && self.options.useKey.getBoundKeyTranslationKey().equals("key.mouse.right")) {
             return;
         }
         this.accessor.invokeDoItemUse();

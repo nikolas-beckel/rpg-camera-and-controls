@@ -2,6 +2,7 @@ package kunga.rpgcamera.mixin.client.keyboardinput;
 
 import kunga.rpgcamera.input.Keybinds;
 import kunga.rpgcamera.input.RpgPlayerInput;
+import kunga.rpgcamera.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.KeyboardInput;
 import net.minecraft.client.option.Perspective;
@@ -27,7 +28,9 @@ public final class KeyboardInputMixin {
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void rpg$tick(CallbackInfo ci) {
         var client = MinecraftClient.getInstance();
-        if (client == null || client.player == null) return;
+        if (client == null || client.player == null || !ClientUtil.isRpgThirdPerson(client)) {
+            return;
+        }
 
         var options = client.options;
         if (options.getPerspective() != Perspective.THIRD_PERSON_BACK) return;

@@ -34,15 +34,13 @@ public final class CameraMixin {
     }
 
     @Inject(method = "update", at = @At("TAIL"))
-    private void rpg$update(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inversiveView,
-            float tickProgress, CallbackInfo ci) {
+    private void rpg$update(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inversiveView, float tickProgress, CallbackInfo ci) {
         var client = MinecraftClient.getInstance();
         if (!ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client))
             return;
 
         RpgCamera.ensureDefaultCameraPosition();
 
-        // When moving and not orbiting set camera back behind player.
         if (!RpgCamera.isOrbiting()) {
             var moving = focusedEntity.getVelocity().horizontalLengthSquared() > 0.0001;
 
@@ -58,8 +56,7 @@ public final class CameraMixin {
         }
 
         final double targetX = MathHelper.lerp(tickProgress, focusedEntity.lastX, focusedEntity.getX());
-        final double targetY = MathHelper.lerp(tickProgress, focusedEntity.lastY, focusedEntity.getY())
-                + focusedEntity.getStandingEyeHeight() * 0.8;
+        final double targetY = MathHelper.lerp(tickProgress, focusedEntity.lastY, focusedEntity.getY()) + focusedEntity.getStandingEyeHeight() * 0.8;
         final double targetZ = MathHelper.lerp(tickProgress, focusedEntity.lastZ, focusedEntity.getZ());
 
         float camYawDeg = (float) Math.toDegrees(RpgCamera.getOrbitYawRadians());
@@ -71,18 +68,17 @@ public final class CameraMixin {
         this.accessor.invokeSetRotation(camYawDeg, camPitchDeg);
 
         final double radius = RpgCamera.getRadiusForFrame();
-        Vector3f fwd = self.getHorizontalPlane(); // Blickrichtung (normiert)
+        Vector3f fwd = self.getHorizontalPlane();
         Vec3d desired = new Vec3d(
                 targetX - fwd.x * radius,
                 targetY - fwd.y * radius,
                 targetZ - fwd.z * radius);
 
         Vec3d from = new Vec3d(targetX, targetY, targetZ);
-        Vec3d to = desired;
 
-        if (client != null && client.world != null) {
+        if (client.world != null) {
             RaycastContext ctx = new RaycastContext(
-                    from, to,
+                    from, desired,
                     RaycastContext.ShapeType.COLLIDER,
                     RaycastContext.FluidHandling.NONE,
                     focusedEntity);

@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "package": "kunga.rpgcameraandcontrols.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "bipedentitymodel.BipedEntityModelMixin",
+    "camera.CameraAccessor",
+    "camera.CameraMixin",
+    "gamerenderer.GameRendererAccessor",
+    "gamerenderer.GameRendererMixin",
+    "handledscreen.HandledScreenMixin",
+    "keyboardinput.InputAccessor",
+    "keyboardinput.KeyboardInputAccessor",
+    "keyboardinput.KeyboardInputMixin",
+    "minecraftclient.MinecraftClientAccessor",
+    "minecraftclient.MinecraftClientMixin",
+    "mouse.MouseAccessor",
+    "mouse.MouseMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

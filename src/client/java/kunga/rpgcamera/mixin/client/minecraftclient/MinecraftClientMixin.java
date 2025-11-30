@@ -41,6 +41,8 @@ public final class MinecraftClientMixin {
 
     @Unique
     private double lastRenderTime = Double.MIN_VALUE;
+    @Unique
+    private boolean wasInRpgPerspective = false;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void initialization(RunArgs args, CallbackInfo ci) {
@@ -49,6 +51,14 @@ public final class MinecraftClientMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
     private void rpg$render(boolean tick, CallbackInfo ci) {
+        boolean isInRpgMode = ClientUtil.isIngame(self) && ClientUtil.isRpgThirdPerson(self);
+        if (wasInRpgPerspective && !isInRpgMode) {
+            if (self.currentScreen == null) {
+                self.mouse.lockCursor();
+            }
+        }
+        wasInRpgPerspective = isInRpgMode;
+
         if (self.player == null || !ClientUtil.isIngame(self) || !self.isWindowFocused() || !ClientUtil.isRpgThirdPerson(self)) {
             lastRenderTime = GlfwUtil.getTime();
             return;

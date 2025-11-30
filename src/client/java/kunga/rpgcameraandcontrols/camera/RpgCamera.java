@@ -1,6 +1,6 @@
 package kunga.rpgcameraandcontrols.camera;
 
-import kunga.rpgcameraandcontrols.RPGCamera;
+import kunga.rpgcameraandcontrols.RpgCameraAndControls;
 import kunga.rpgcameraandcontrols.input.RpgMouseInput;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -16,7 +16,7 @@ import net.minecraft.util.math.Vec3d;
 
 public final class RpgCamera {
 
-    private static final Identifier CAMERA_ZOOM_ID = Identifier.of(RPGCamera.MOD_ID, "camera-zoom");
+    private static final Identifier CAMERA_ZOOM_ID = Identifier.of(RpgCameraAndControls.MOD_ID, "camera-zoom");
 
     public static double ZOOM_MIN = 1.5;
     public static double ZOOM_MAX = 12.0;

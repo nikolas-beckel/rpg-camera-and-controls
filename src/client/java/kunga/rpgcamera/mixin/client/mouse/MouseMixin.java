@@ -66,7 +66,6 @@ public final class MouseMixin {
                 this.storedCursorX = x[0];
                 this.storedCursorY = y[0];
 
-                GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
                 RpgMouseInput.onRightMouseDown();
             } else if (action == GLFW.GLFW_RELEASE) {
                 RpgMouseInput.onRightMouseUp();
@@ -84,6 +83,12 @@ public final class MouseMixin {
         }
 
         RpgMouseInput.updateCursorDelta(this.accessor.getCursorDeltaX(), this.accessor.getCursorDeltaY());
+
+        if (RpgMouseInput.isRightMouseHeld() && RpgMouseInput.hasMovedDuringHold() &&
+            GLFW.glfwGetInputMode(window, GLFW.GLFW_CURSOR) != GLFW.GLFW_CURSOR_DISABLED) {
+            GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+        }
+
         RpgCamera.updateOrbitFromMouseDelta();
     }
 

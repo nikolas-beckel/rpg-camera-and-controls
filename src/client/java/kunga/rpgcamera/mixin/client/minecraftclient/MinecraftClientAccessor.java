@@ -4,11 +4,15 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.tutorial.TutorialManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(MinecraftClient.class)
 public interface MinecraftClientAccessor {
 
     @Accessor("tutorialManager")
     TutorialManager tutorialManager();
+
+    @Invoker("doItemUse")
+    void invokeDoItemUse();
 
 }

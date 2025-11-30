@@ -5,6 +5,7 @@ import kunga.rpgcamera.camera.RpgCamera;
 import kunga.rpgcamera.input.Keybinds;
 import kunga.rpgcamera.input.RpgMouseInput;
 import kunga.rpgcamera.input.RpgPlayerInput;
+import kunga.rpgcamera.input.UseKeyInput;
 import kunga.rpgcamera.model.PlayerHead;
 import kunga.rpgcamera.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
@@ -79,8 +80,15 @@ public final class MinecraftClientMixin {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void rpg$tick(CallbackInfo ci) {
-        if (true) {
+        UseKeyInput.tick(self);
 
+        if (UseKeyInput.isJustReleased() && self.options.useKey.getBoundKeyTranslationKey().equals("key.mouse.right")) {
+            boolean dragged = RpgCamera.consumeMovedFlagOnRelease();
+            if (!dragged) {
+                if (self.currentScreen == null && self.player != null && !self.player.isUsingItem()) {
+                    this.accessor.invokeDoItemUse();
+                }
+            }
         }
     }
 
@@ -118,11 +126,17 @@ public final class MinecraftClientMixin {
 
     @Redirect(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;doItemUse()V", ordinal = 0))
     private void rpg$handleInputEvents_doItemOnWasPressed(MinecraftClient self) {
-        // Do nothing.
+        if (self.options.useKey.getBoundKeyTranslationKey().equals("key.mouse.right")) {
+            return;
+        }
+        this.accessor.invokeDoItemUse();
     }
 
     @Redirect(method = "handleInputEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;doItemUse()V", ordinal = 1))
     private void rpg$handleInputEvents_doItemOnIsPressed(MinecraftClient self) {
-        // Do nothing.
+        if (self.options.useKey.getBoundKeyTranslationKey().equals("key.mouse.right")) {
+            return;
+        }
+        this.accessor.invokeDoItemUse();
     }
 }

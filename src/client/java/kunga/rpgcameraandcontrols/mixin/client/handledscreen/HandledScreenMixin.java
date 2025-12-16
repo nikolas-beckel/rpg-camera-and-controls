@@ -5,6 +5,7 @@ import kunga.rpgcameraandcontrols.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,13 +19,13 @@ public abstract class HandledScreenMixin extends Screen {
     }
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
-    private void rpg$keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+    private void rpg$keyPressed(KeyInput input, CallbackInfoReturnable<Boolean> cir) {
         var client = MinecraftClient.getInstance();
         if (!ClientUtil.isRpgThirdPerson(client)) {
             return;
         }
 
-        if (Keybinds.OPEN_INVENTORY.matchesKey(keyCode, scanCode)) {
+        if (Keybinds.OPEN_INVENTORY.matchesKey(input)) {
             this.close();
             cir.setReturnValue(true);
         }

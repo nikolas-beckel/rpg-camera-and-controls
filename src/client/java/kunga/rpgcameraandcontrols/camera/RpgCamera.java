@@ -151,7 +151,7 @@ public final class RpgCamera {
                 if (target == null) {
                     return false;
                 }
-                Vec3d entityPosWorld = target.getPos();
+                Vec3d entityPosWorld = target.getEntityPos();
                 double distance = playerEyePos.distanceTo(entityPosWorld);
                 return distance <= (allowedEntityReach + 0.05);
             }

@@ -1,6 +1,7 @@
 package kunga.rpgcameraandcontrols.mixin.client.gamerenderer;
 
 import kunga.rpgcameraandcontrols.util.ClientUtil;
+import net.minecraft.client.render.block.BlockRenderManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,7 +42,7 @@ public final class GameRendererMixin {
     private static HitResult crosshairTarget;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void initialize(MinecraftClient client, HeldItemRenderer heldItemRenderer, BufferBuilderStorage bufferBuilderStorage, CallbackInfo ci) {
+    private void initialize(MinecraftClient client, HeldItemRenderer firstPersonHeldItemRenderer, BufferBuilderStorage buffers, BlockRenderManager blockRenderManager, CallbackInfo ci) {
         this.accessor = (GameRendererAccessor) self;
     }
 

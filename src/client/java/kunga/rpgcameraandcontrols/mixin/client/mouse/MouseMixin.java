@@ -6,6 +6,7 @@ import kunga.rpgcameraandcontrols.input.RpgMouseInput;
 import kunga.rpgcameraandcontrols.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.input.MouseInput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,13 +46,13 @@ public final class MouseMixin {
     }
 
     @Inject(method = "onMouseButton", at = @At("HEAD"))
-    private void rpg$onMouseButton(long window, int button, int action, int modifiers, CallbackInfo ci) {
+    private void rpg$onMouseButton(long window, MouseInput input, int action, CallbackInfo ci) {
         var client = MinecraftClient.getInstance();
         if (client == null || !ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client)) {
             return;
         }
 
-        if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+        if (input.button() == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             if (action == GLFW.GLFW_PRESS) {
                 double[] x = new double[1];
                 double[] y = new double[1];

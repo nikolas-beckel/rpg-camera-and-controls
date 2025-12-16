@@ -1,10 +1,10 @@
 {
-  "category.rpg-camera.rpg-camera-and-controls": "RPG Camera and Controls",
-  "key.rpg-camera.turn_left": "Turn Left",
-  "key.rpg-camera.turn_right": "Turn Right",
-  "key.rpg-camera.strafe_left": "Strafe Left",
-  "key.rpg-camera.strafe_right": "Strafe Right",
-  "key.rpg-camera.drop_item": "Drop Item",
-  "key.rpg-camera.open_inventory": "Open Inventory",
-  "key.rpg-camera.toggle_zoom": "Toggle Zoom"
+  "key.category.rpg.rpg-camera-and-controls": "RPG Camera and Controls",
+  "key.rpg.turn_left": "Turn Left",
+  "key.rpg.turn_right": "Turn Right",
+  "key.rpg.strafe_left": "Strafe Left",
+  "key.rpg.strafe_right": "Strafe Right",
+  "key.rpg.drop_item": "Drop Item",
+  "key.rpg.open_inventory": "Open Inventory",
+  "key.rpg.toggle_zoom": "Toggle Zoom"
 }

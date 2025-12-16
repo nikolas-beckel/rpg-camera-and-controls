@@ -5,6 +5,7 @@ import kunga.rpgcameraandcontrols.input.Keybinds;
 import kunga.rpgcameraandcontrols.input.RpgPlayerInput;
 import kunga.rpgcameraandcontrols.input.UseKeyInput;
 import kunga.rpgcameraandcontrols.model.PlayerHead;
+import kunga.rpgcameraandcontrols.platform.Platform;
 import kunga.rpgcameraandcontrols.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -115,7 +116,7 @@ public final class MinecraftClientMixin {
         }
         while (Keybinds.DROP_ITEM.wasPressed()) {
             if (!self.player.isSpectator()) {
-                self.player.dropSelectedItem(Screen.hasControlDown());
+                self.player.dropSelectedItem(Platform.input().isControlDown());
             }
         }
 

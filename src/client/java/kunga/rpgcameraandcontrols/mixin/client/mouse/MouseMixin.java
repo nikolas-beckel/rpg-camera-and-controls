@@ -3,9 +3,12 @@ package kunga.rpgcameraandcontrols.mixin.client.mouse;
 import kunga.rpgcameraandcontrols.camera.RpgCamera;
 import kunga.rpgcameraandcontrols.input.Keybinds;
 import kunga.rpgcameraandcontrols.input.RpgMouseInput;
+import kunga.rpgcameraandcontrols.input.RpgRaycast;
+import kunga.rpgcameraandcontrols.target.TargetingSystem;
 import kunga.rpgcameraandcontrols.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.util.hit.EntityHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -50,6 +53,18 @@ public final class MouseMixin {
         if (client == null || !ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client)) {
             return;
         }
+
+        if (window == client.getWindow().getHandle() && client.currentScreen == null) {
+            if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_RELEASE) {
+                var hitResult = RpgRaycast.pickUnderMouse(self, client);
+                if (hitResult instanceof EntityHitResult entityHitResult) {
+                    TargetingSystem.setTarget(entityHitResult.getEntity());
+                } else {
+                    TargetingSystem.setTarget(null);
+                }
+            }
+        }
+
 
         if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             if (action == GLFW.GLFW_PRESS) {

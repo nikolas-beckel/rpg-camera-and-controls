@@ -15,7 +15,8 @@
     "minecraftclient.MinecraftClientAccessor",
     "minecraftclient.MinecraftClientMixin",
     "mouse.MouseAccessor",
-    "mouse.MouseMixin"
+    "mouse.MouseMixin",
+    "worldrenderer.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -2,7 +2,9 @@ package kunga.rpgcameraandcontrols.mixin.client.camera;
 
 import net.minecraft.world.BlockView;
 
+import net.minecraft.world.World;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,7 +36,7 @@ public final class CameraMixin {
     }
 
     @Inject(method = "update", at = @At("TAIL"))
-    private void rpg$update(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inversiveView, float tickProgress, CallbackInfo ci) {
+    private void rpg$update(World area, Entity focusedEntity, boolean thirdPerson, boolean inversiveView, float tickProgress, CallbackInfo ci) {
         var client = MinecraftClient.getInstance();
         if (!ClientUtil.isIngame(client) || !ClientUtil.isRpgThirdPerson(client))
             return;
@@ -68,11 +70,11 @@ public final class CameraMixin {
         this.accessor.invokeSetRotation(camYawDeg, camPitchDeg);
 
         final double radius = RpgCamera.getRadiusForFrame();
-        Vector3f fwd = self.getHorizontalPlane();
+        Vector3fc fwd = self.getHorizontalPlane();
         Vec3d desired = new Vec3d(
-                targetX - fwd.x * radius,
-                targetY - fwd.y * radius,
-                targetZ - fwd.z * radius);
+                targetX - fwd.x() * radius,
+                targetY - fwd.y() * radius,
+                targetZ - fwd.z() * radius);
 
         Vec3d from = new Vec3d(targetX, targetY, targetZ);
 
@@ -86,7 +88,7 @@ public final class CameraMixin {
             if (hit.getType() != HitResult.Type.MISS) {
                 double eps = 0.3;
                 Vec3d hp = hit.getPos();
-                this.accessor.invokeSetPos(hp.x + fwd.x * eps, hp.y + fwd.y * eps, hp.z + fwd.z * eps);
+                this.accessor.invokeSetPos(hp.x + fwd.x() * eps, hp.y + fwd.y() * eps, hp.z + fwd.z() * eps);
                 return;
             }
         }

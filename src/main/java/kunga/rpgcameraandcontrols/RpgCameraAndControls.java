@@ -1,7 +1,10 @@
 package kunga.rpgcameraandcontrols;
 
+import kunga.rpgcameraandcontrols.network.TargetC2SPayload;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +22,20 @@ public class RpgCameraAndControls implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		LOGGER.info("Hello Fabric world!");
+        PayloadTypeRegistry.playC2S().register(TargetC2SPayload.ID, TargetC2SPayload.CODEC);
+        ServerPlayNetworking.registerGlobalReceiver(TargetC2SPayload.ID, ((payload, context) -> {
+            var targetId = payload.targetId();
+            LOGGER.info("Received TargetC2SPayload Entity ID: {}", payload.targetId());
+
+            var player = context.player();
+
+            // Auf dem Server-Thread ausführen
+            context.server().execute(() -> {
+                var target = player.getWorld().getEntityById(targetId);
+                if (target != null) {
+                    RpgCameraAndControls.LOGGER.info("Player {} targeted entity {}", player.getName().getString(), target.getName().getString());
+                }
+            });
+        }));
 	}
 }

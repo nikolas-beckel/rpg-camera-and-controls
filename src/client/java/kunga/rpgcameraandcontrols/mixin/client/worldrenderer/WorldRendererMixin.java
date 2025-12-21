@@ -1,6 +1,5 @@
 package kunga.rpgcameraandcontrols.mixin.client.worldrenderer;
 
-import kunga.rpgcameraandcontrols.render.TargetRingRenderer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.ObjectAllocator;
@@ -30,11 +29,6 @@ public class WorldRendererMixin {
         boolean shouldRenderSky,
         CallbackInfo ci
     ) {
-        // Wir erstellen einen neuen MatrixStack und setzen die aktuelle View-Matrix (positionMatrix)
-        MatrixStack matrices = new MatrixStack();
-        matrices.peek().getPositionMatrix().set(positionMatrix);
 
-        // tickCounter.getTickDelta(true) gibt uns den float-Wert für die Interpolation
-        TargetRingRenderer.render(matrices, tickCounter.getDynamicDeltaTicks(), camera);
     }
 }

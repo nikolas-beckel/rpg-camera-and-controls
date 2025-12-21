@@ -1,5 +1,7 @@
 package kunga.rpgcameraandcontrols.target;
 
+import kunga.rpgcameraandcontrols.network.TargetC2SPayload;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +17,10 @@ public class TargetingSystem {
         currentTarget = entity;
 
         if (currentTarget != null) {
-            LOGGER.info("Neues Ziel anvisiert: " + currentTarget.getName().getString());
+            LOGGER.info("New target: {}", currentTarget.getName().getString());
+            ClientPlayNetworking.send(new TargetC2SPayload(currentTarget.getId()));
         } else {
-            LOGGER.info("Ziel aufgehoben (Nichts anvisiert).");
+            LOGGER.info("Target reset / no target.");
         }
     }
 

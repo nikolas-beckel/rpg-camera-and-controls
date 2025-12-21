@@ -1,5 +1,6 @@
 package kunga.rpgcameraandcontrols.mixin.client.mouse;
 
+import kunga.rpgcameraandcontrols.RpgCameraAndControlsClient;
 import kunga.rpgcameraandcontrols.camera.RpgCamera;
 import kunga.rpgcameraandcontrols.input.Keybinds;
 import kunga.rpgcameraandcontrols.input.RpgMouseInput;
@@ -9,6 +10,7 @@ import kunga.rpgcameraandcontrols.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -57,6 +59,13 @@ public final class MouseMixin {
         if (window == client.getWindow().getHandle() && client.currentScreen == null) {
             if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_RELEASE) {
                 var hitResult = RpgRaycast.pickUnderMouse(self, client);
+
+                if (hitResult != null && hitResult.getType() != net.minecraft.util.hit.HitResult.Type.MISS) {
+                    Vec3d start = client.gameRenderer.getCamera().getPos();
+                    Vec3d end = hitResult.getPos();
+                    RpgCameraAndControlsClient.setDebugRaycast(start, end);
+                }
+
                 if (hitResult instanceof EntityHitResult entityHitResult) {
                     TargetingSystem.setTarget(entityHitResult.getEntity());
                 } else {

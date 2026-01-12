@@ -1,5 +1,6 @@
 package kunga.rpgcameraandcontrols.mixin.client.mouse;
 
+import kunga.rpgcameraandcontrols.RpgCameraAndControls;
 import kunga.rpgcameraandcontrols.RpgCameraAndControlsClient;
 import kunga.rpgcameraandcontrols.camera.RpgCamera;
 import kunga.rpgcameraandcontrols.input.Keybinds;
@@ -61,8 +62,8 @@ public final class MouseMixin {
                 var hitResult = RpgRaycast.pickUnderMouse(self, client);
 
                 if (hitResult != null && hitResult.getType() != net.minecraft.util.hit.HitResult.Type.MISS) {
-                    Vec3d start = client.gameRenderer.getCamera().getPos();
                     Vec3d end = hitResult.getPos();
+                    Vec3d start = client.gameRenderer.getCamera().getPos();
                     RpgCameraAndControlsClient.setDebugRaycast(start, end);
                 }
 
@@ -73,7 +74,6 @@ public final class MouseMixin {
                 }
             }
         }
-
 
         if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             if (action == GLFW.GLFW_PRESS) {

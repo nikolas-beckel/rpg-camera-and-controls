@@ -17,45 +17,66 @@ import net.minecraft.world.RaycastContext;
 public final class RpgRaycast {
 
     public static HitResult pickUnderMouse(Mouse mouse, MinecraftClient client) {
-        Window win = client.getWindow();
-        double mx = mouse.getX();
-        double my = mouse.getY();
+        if (client.world == null) return null;
 
-        // Normalisierte Gerätekoordinaten
-        float fx = (float) (mx * 2.0 / win.getFramebufferWidth() - 1.0f);
-        float fy = (float) (1.0 - my * 2.0 / win.getFramebufferHeight());
+        Window window = client.getWindow();
+
+        // Mouse-Koordinaten in Fensterkoordinaten
+        double mouseXInWindowPixels = mouse.getX();
+        double mouseYInWindowPixels = mouse.getY();
+
+        // Faktoren für Camera.Projection.getPosition:
+        // - factorX: -1 links ... +1 rechts
+        // - factorY: +1 oben ... -1 unten
+        float projectionFactorX = (float) (mouseXInWindowPixels * 2.0 / window.getWidth() - 1.0);
+        float projectionFactorY = (float) (1.0 - mouseYInWindowPixels * 2.0 / window.getHeight());
 
         Camera camera = client.gameRenderer.getCamera();
-        Vec3d start = camera.getCameraPos();
-        Vec3d dir = camera.getProjection().getPosition(fx, fy).normalize();
 
-        // Maximale Reichweite für das Anvisieren (kann angepasst werden)
+        // Startpunkt ist die Render-Kamera-Position (Third-Person hinter dem Spieler)
+        Vec3d rayStartWorldPosition = camera.getCameraPos();
+
+        // Richtung aus der Kamera-Projektion (FOV/Aspect/Rotation) -> das ist echtes Screen-Picking
+        Vec3d rayDirectionWorld = camera.getProjection()
+            .getPosition(projectionFactorX, projectionFactorY)
+            .normalize();
+
+        // Reichweite (zum Debuggen ruhig hoch lassen)
         double maxRange = 100.0;
-        Vec3d end = start.add(dir.multiply(maxRange));
+        Vec3d rayEndWorldPosition = rayStartWorldPosition.add(rayDirectionWorld.multiply(maxRange));
 
-        // 1. Block Raycast
+        // 1) Block Raycast
         BlockHitResult blockHit = client.world.raycast(new RaycastContext(
-            start, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE,
-            client.getCameraEntity()));
+            rayStartWorldPosition,
+            rayEndWorldPosition,
+            RaycastContext.ShapeType.OUTLINE,
+            RaycastContext.FluidHandling.NONE,
+            client.getCameraEntity()
+        ));
 
-        double blockDistSq = blockHit.getType() == HitResult.Type.MISS
+        double blockHitDistanceSquared = blockHit.getType() == HitResult.Type.MISS
             ? Double.POSITIVE_INFINITY
-            : blockHit.getPos().squaredDistanceTo(start);
+            : blockHit.getPos().squaredDistanceTo(rayStartWorldPosition);
 
-        // 2. Entity Raycast
-        Entity camEntity = client.getCameraEntity();
-        Box sweep = camEntity.getBoundingBox().stretch(dir.multiply(maxRange)).expand(1.0, 1.0, 1.0);
+        // 2) Entity Raycast
+        Entity cameraEntity = client.getCameraEntity();
 
-        EntityHitResult entHit = ProjectileUtil.raycast(
-            camEntity, start, end, sweep, EntityPredicates.CAN_HIT, maxRange * maxRange);
+        // WICHTIG: Sweep-Box entlang des Rays bauen (nicht von der Player-Boundingbox aus!)
+        Box sweepBoxAlongRay = new Box(rayStartWorldPosition, rayEndWorldPosition).expand(1.0, 1.0, 1.0);
 
-        if (entHit != null) {
-            double entDistSq = entHit.getPos().squaredDistanceTo(start);
-            // Wenn Entity näher ist als der Block (oder kein Block getroffen wurde)
-            if (entDistSq < blockDistSq) {
-                return entHit;
-            }
+        EntityHitResult entityHit = ProjectileUtil.raycast(
+            cameraEntity,
+            rayStartWorldPosition,
+            rayEndWorldPosition,
+            sweepBoxAlongRay,
+            EntityPredicates.CAN_HIT,
+            Math.min(blockHitDistanceSquared, maxRange * maxRange)
+        );
+
+        if (entityHit != null) {
+            return entityHit;
         }
+
         return blockHit;
     }
 }
